@@ -10,7 +10,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def main():
     try:
-        response = supabase.table("questions").select("*").execute()
+        response = supabase.table("quiz").select("*").execute()
         rows = response.data
     except Exception as e:
         print(f"Supabase fetch error: {e}")
