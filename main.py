@@ -35,7 +35,7 @@ def main():
             f"#看護学生 #看護師国家試験 #第116回看護師国家試験"
         )
 
-        # HTML用のコンテンツ作成
+        # HTML用のコンテンツ作成（アプリへの案内とリンクを追加）
         html_content = f"""
         <h2>本日の問題</h2>
         <p><strong>{row.get('question', '')}</strong></p>
@@ -47,6 +47,12 @@ def main():
         </ul>
         <p><strong>正解:</strong> {row.get('answer', '')}</p>
         <p><strong>解説:</strong> {row.get('explanation', '')}</p>
+        
+        <hr style="margin: 20px 0;">
+        <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; text-align: center;">
+            <p style="margin-bottom: 10px; font-weight: bold;">✨ 正解と解説をさらに詳しくチェック！</p>
+            <a href="https://kanngosi-no-kokkasikenn-goukaku.ai.studio/" target="_blank" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">看護師国家試験対策アプリを開く</a>
+        </div>
         """
 
     # index.html の更新
@@ -56,7 +62,7 @@ def main():
     <meta charset="UTF-8">
     <title>看護師国家試験 過去問・解説</title>
 </head>
-<body>
+<body style="font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; line-height: 1.6;">
     <h1>本日の看護師国家試験 対策</h1>
     {html_content}
 </body>
