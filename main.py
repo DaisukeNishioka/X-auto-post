@@ -20,10 +20,12 @@ def main():
         text = "【本日の看護師国家試験 対策】"
         html_content = "<p>本日の問題は準備中です。</p>"
     else:
-        row = random.choice(rows)
+        # 有効な問題文（text または question）が入っている行を優先的に選ぶ
+        valid_rows = [r for r in rows if r.get('text') or r.get('question')]
+        row = random.choice(valid_rows if valid_rows else rows)
         
-        # 取得データのカラム名確認（問題文は 'text'）
-        q_text = row.get('text', '')
+        # 問題文を安全に取得（text または question カラムに対応）
+        q_text = row.get('text', '') or row.get('question', '') or "（問題文が設定されていません）"
         c1 = row.get('choice1', '')
         c2 = row.get('choice2', '')
         c3 = row.get('choice3', '')
@@ -44,7 +46,7 @@ def main():
             f"#看護学生 #看護師国家試験 #第116回看護師国家試験"
         )
 
-        # HTML用のコンテンツ作成（問題文を表示し、選択肢の重複番号を防ぐ）
+        # HTML用のコンテンツ作成
         html_content = f"""
         <h2>本日の問題</h2>
         <p><strong>{q_text}</strong></p>
