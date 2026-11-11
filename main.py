@@ -30,9 +30,9 @@ def main():
             f"2️⃣ {row.get('choice2', '')}\n"
             f"3️⃣ {row.get('choice3', '')}\n"
             f"4️⃣ {row.get('choice4', '')}\n"
-            f"✨正解と解説はWebをチェック！\n"
-            f"👇今日の問題と解説：https://daisukenishioka.github.io/X-auto-post/\n"
-            f"#看護学生 #看護師国家試験 #第114回看護師国家試験"
+            f"✨正解と解説はアプリをチェック！\n"
+            f"👇今日の問題と解説：https://kanngosi-no-kokkasikenn-goukaku.ai.studio/\n"
+            f"#看護学生 #看護師国家試験 #第116回看護師国家試験"
         )
 
         # HTML用のコンテンツ作成
