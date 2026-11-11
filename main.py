@@ -22,31 +22,40 @@ def main():
     else:
         row = random.choice(rows)
         
+        # 取得データのカラム名確認（問題文は 'text'）
+        q_text = row.get('text', '')
+        c1 = row.get('choice1', '')
+        c2 = row.get('choice2', '')
+        c3 = row.get('choice3', '')
+        c4 = row.get('choice4', '')
+        ans = row.get('answer', '')
+        exp = row.get('explanation', '')
+
         # X (Twitter) 用の投稿文面を作成
         text = (
             f"【本日の看護師国家試験 対策】\n"
-            f"Q. {row.get('question', '')}\n\n"
-            f"1️⃣ {row.get('choice1', '')}\n"
-            f"2️⃣ {row.get('choice2', '')}\n"
-            f"3️⃣ {row.get('choice3', '')}\n"
-            f"4️⃣ {row.get('choice4', '')}\n"
+            f"Q. {q_text}\n\n"
+            f"{c1}\n"
+            f"{c2}\n"
+            f"{c3}\n"
+            f"{c4}\n"
             f"✨正解と解説はアプリをチェック！\n"
             f"👇今日の問題と解説：https://kanngosi-no-kokkasikenn-goukaku.ai.studio/\n"
             f"#看護学生 #看護師国家試験 #第116回看護師国家試験"
         )
 
-        # HTML用のコンテンツ作成（アプリへの案内とリンクを追加）
+        # HTML用のコンテンツ作成（問題文を表示し、選択肢の重複番号を防ぐ）
         html_content = f"""
         <h2>本日の問題</h2>
-        <p><strong>{row.get('question', '')}</strong></p>
+        <p><strong>{q_text}</strong></p>
         <ul>
-            <li>1. {row.get('choice1', '')}</li>
-            <li>2. {row.get('choice2', '')}</li>
-            <li>3. {row.get('choice3', '')}</li>
-            <li>4. {row.get('choice4', '')}</li>
+            <li>{c1}</li>
+            <li>{c2}</li>
+            <li>{c3}</li>
+            <li>{c4}</li>
         </ul>
-        <p><strong>正解:</strong> {row.get('answer', '')}</p>
-        <p><strong>解説:</strong> {row.get('explanation', '')}</p>
+        <p><strong>正解:</strong> {ans}</p>
+        <p><strong>解説:</strong> {exp}</p>
         
         <hr style="margin: 20px 0;">
         <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; text-align: center;">
