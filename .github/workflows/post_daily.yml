@@ -3,7 +3,7 @@ name: Daily Post and Update HTML
 on:
   schedule:
     # 毎日 日本時間 朝7:00 に自動実行（UTC 22:00）
-    - cron: '0 22 * * *'
+- cron: '0 22 * * *'
   workflow_dispatch: # 手動実行ボタンも残しておく
 
 permissions:
@@ -14,26 +14,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+- name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+- name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+- name: Install dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Run script to update index.html
+- name: Run script to update index.html and post to X
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
         run: |
           python main.py
 
-      - name: Commit and push updated index.html
+- name: Commit and push updated index.html
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
