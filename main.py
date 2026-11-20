@@ -112,7 +112,6 @@ def build_x_text(q_text: str, c1: str, c2: str, c3: str, c4: str) -> str:
     header = "【本日の看護師国家試験 対策】\nQ. "
 
     full_text = f"{header}{q_text}\n\n{choices_block}{footer}"
-    # Xの文字数制限（日本語全角換算で約140文字相当）に収める調整
     if len(full_text) > 135:
         available_for_q = max(25, 135 - len(header) - len("\n\n") - len(choices_block) - len(footer) - 1)
         trimmed_q = q_text[:available_for_q] + "…" if len(q_text) > available_for_q else q_text
@@ -122,4 +121,45 @@ def build_x_text(q_text: str, c1: str, c2: str, c3: str, c4: str) -> str:
             full_text = (
                 f"【本日の看護師国家試験 対策】\n"
                 f"Q. {short_q}\n"
-                f"👇解説・選択肢：
+                f"👇解説・選択肢：https://kanngosi-no-kokkasikenn-goukaku.ai.studio/\n"
+                f"#看護学生 #看護師国家試験"
+            )
+    return full_text
+
+
+def main():
+    try:
+        response = supabase.table("quiz").select("*").execute()
+        rows = response.data
+    except Exception as e:
+        print(f"Supabase fetch error: {e}")
+        rows = []
+
+    if not rows:
+        text = "【本日の看護師国家試験 対策】\n#看護学生 #看護師国家試験"
+        html_content = "<p>本日の問題は準備中です。</p>"
+    else:
+        row = random.choice(rows)
+
+        q_text = row.get("text", "") or "（問題文が設定されていません）"
+        c1 = row.get("choice1", "")
+        c2 = row.get("choice2", "")
+        c3 = row.get("choice3", "")
+        c4 = row.get("choice4", "")
+        ans = row.get("answer", "")
+        exp = row.get("explanation", "")
+
+        text = build_x_text(q_text, c1, c2, c3, c4)
+
+        html_content = f"""
+        <h2>本日の問題</h2>
+        <p style="font-size: 1.1em; font-weight: bold; margin-bottom: 20px;">{q_text}</p>
+        
+        <ul style="list-style-type: none; padding-left: 0; line-height: 2;">
+            <li>{c1}</li>
+            <li>{c2}</li>
+            <li>{c3}</li>
+            <li>{c4}</li>
+        </ul>
+        
+        <div style="margin-top: 20px; padding
