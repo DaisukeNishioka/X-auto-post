@@ -11,11 +11,9 @@ import urllib.request
 import uuid
 from supabase import create_client, Client
 
-# Supabase接続情報の取得
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
-# X API (OAuth 1.0a) 認証情報の取得
 X_API_KEY = os.environ.get("X_API_KEY")
 X_API_SECRET = os.environ.get("X_API_SECRET")
 X_ACCESS_TOKEN = os.environ.get("X_ACCESS_TOKEN")
@@ -127,6 +125,47 @@ def build_x_text(q_text: str, c1: str, c2: str, c3: str, c4: str) -> str:
     return full_text
 
 
+def build_html_content(q_text: str, c1: str, c2: str, c3: str, c4: str, ans: str, exp: str) -> str:
+    app_url = "https://kanngosi-no-kokkasikenn-goukaku.ai.studio/"
+    lines = [
+        "<h2>本日の問題</h2>",
+        '<p style="font-size: 1.1em; font-weight: bold; margin-bottom: 20px;">' + q_text + "</p>",
+        '<ul style="list-style-type: none; padding-left: 0; line-height: 2;">',
+        "<li>" + c1 + "</li>",
+        "<li>" + c2 + "</li>",
+        "<li>" + c3 + "</li>",
+        "<li>" + c4 + "</li>",
+        "</ul>",
+        '<div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-left: 4px solid #007bff;">',
+        '<p style="margin: 0 0 10px 0;"><strong>正解:</strong> ' + ans + "</p>",
+        '<p style="margin: 0;"><strong>解説:</strong> ' + exp + "</p>",
+        "</div>",
+        '<hr style="margin: 30px 0;">',
+        '<div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; text-align: center;">',
+        '<p style="margin-bottom: 15px; font-weight: bold; color: #0056b3;">✨ 正解と解説をさらに詳しくチェック！</p>',
+        '<a href="' + app_url + '" target="_blank" style="display: inline-block; background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">看護師国家試験対策アプリを開く</a>',
+        "</div>",
+    ]
+    return "\n".join(lines)
+
+
+def build_index_html(html_content: str) -> str:
+    page_lines = [
+        "<!DOCTYPE html>",
+        '<html lang="ja">',
+        "<head>",
+        '<meta charset="UTF-8">',
+        "<title>看護師国家試験 過去問・解説</title>",
+        "</head>",
+        '<body style="font-family: sans-serif; max-width: 650px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #333;">',
+        '<h1 style="border-bottom: 2px solid #007bff; padding-bottom: 10px; color: #007bff;">本日の看護師国家試験 対策</h1>',
+        html_content,
+        "</body>",
+        "</html>",
+    ]
+    return "\n".join(page_lines)
+
+
 def main():
     try:
         response = supabase.table("quiz").select("*").execute()
@@ -150,34 +189,16 @@ def main():
         exp = row.get("explanation", "")
 
         text = build_x_text(q_text, c1, c2, c3, c4)
+        html_content = build_html_content(q_text, c1, c2, c3, c4, ans, exp)
 
-        html_content = f"""
-        <h2>本日の問題</h2>
-        <p style="font-size: 1.1em; font-weight: bold; margin-bottom: 20px;">{q_text}</p>
-        
-        <ul style="list-style-type: none; padding-left: 0; line-height: 2;">
-            <li>{c1}</li>
-            <li>{c2}</li>
-            <li>{c3}</li>
-            <li>{c4}</li>
-        </ul>
-        
-        <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-left: 4px solid #007bff;">
-            <p style="margin: 0 0 10px 0;"><strong>正解:</strong> {ans}</p>
-            <p style="margin: 0;"><strong>解説:</strong> {exp}</p>
-        </div>
-        
-        <hr style="margin: 30px 0;">
-        <div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; text-align: center;">
-            <p style="margin-bottom: 15px; font-weight: bold; color: #0056b3;">✨ 正解と解説をさらに詳しくチェック！</p>
-            <a href="https://kanngosi-no-kokkasikenn-goukaku.ai.studio/" target="_blank" style="display: inline-block; background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">看護師国家試験対策アプリを開く</a>
-        </div>
-        """
+    index_html = build_index_html(html_content)
 
-    index_html = f"""<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>看護師国家試験 過去問・解説</title>
-</head>
-<body style="font-family:
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(index_html)
+
+    print("Successfully generated index.html")
+    post_to_x(text)
+
+
+if __name__ == "__main__":
+    main()
