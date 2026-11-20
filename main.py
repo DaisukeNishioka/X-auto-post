@@ -162,4 +162,22 @@ def main():
             <li>{c4}</li>
         </ul>
         
-        <div style="margin-top: 20px; padding
+        <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-left: 4px solid #007bff;">
+            <p style="margin: 0 0 10px 0;"><strong>正解:</strong> {ans}</p>
+            <p style="margin: 0;"><strong>解説:</strong> {exp}</p>
+        </div>
+        
+        <hr style="margin: 30px 0;">
+        <div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; text-align: center;">
+            <p style="margin-bottom: 15px; font-weight: bold; color: #0056b3;">✨ 正解と解説をさらに詳しくチェック！</p>
+            <a href="https://kanngosi-no-kokkasikenn-goukaku.ai.studio/" target="_blank" style="display: inline-block; background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">看護師国家試験対策アプリを開く</a>
+        </div>
+        """
+
+    index_html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>看護師国家試験 過去問・解説</title>
+</head>
+<body style="font-family:
